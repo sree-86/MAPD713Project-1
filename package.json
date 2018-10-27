@@ -1,0 +1,16 @@
+{
+    "name": "phonesapi",
+    "version": "1.0.0",
+    "description": "REST API - Phones",
+    "dependencies": {
+        "restify": "4.1.1",
+        "save": "2.3.0"
+    },
+    "author": "Oguz Bayral",
+    "private": true,
+    "main": "index.js",
+    "scripts" : {
+        "start": "node index.js"
+    }
+}
+
