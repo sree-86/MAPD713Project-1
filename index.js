@@ -13,10 +13,10 @@ var restify = require('restify')
   , patientsSave = require('save')('patients')
 
   // Create the restify server
-  , server = restify.createServer({ name: SERVER_NAME})
+  , server = restify.createServer({ first_name: SERVER_NAME})
 
   server.listen(PORT, function () {
-  console.log('Server %s listening at %s', server.name, server.url)
+  console.log('Server %s listening at %s', server.first_name, server.url)
   console.log('Resources:')
   console.log(' /patients')
   console.log(' /patients/:id')  
@@ -74,28 +74,53 @@ server.post('/patients', function (req, res, next) {
   console.log('received POST request.');
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
   
-  // Make sure name is defined
-  if (req.params.name === undefined ) {
+  // Make sure first_name is defined
+  if (req.params.first_name === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('name must be supplied'))
+    return next(new restify.InvalidArgumentError('first_name must be supplied'))
   }
-  if (req.params.surname === undefined ) {
+  if (req.params.last_name === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('surname must be supplied'))
+    return next(new restify.InvalidArgumentError('last_name must be supplied'))
   }
-  if (req.params.age === undefined ) {
+  if (req.params.blood_group === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('age must be supplied'))
+    return next(new restify.InvalidArgumentError('blood_group must be supplied'))
   }
-  if (req.params.condition === undefined ) {
+  if (req.params.address === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('condition must be supplied'))
+    return next(new restify.InvalidArgumentError('address must be supplied'))
+  }
+  if (req.params.date_of_birth === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('date_of_birth must be supplied'))
+  }
+  if (req.params.date_admitted === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('date_admitted must be supplied'))
+  }
+  if (req.params.department === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('department must be supplied'))
+  }
+  if (req.params.doctor === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('doctor must be supplied'))
+  }
+  if (req.params.ailment === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('ailment must be supplied'))
   }
   var newpatient = {
-		name: req.params.name, 
-    surname: req.params.surname,
-    age: req.params.age,
-    condition:req.params.condition
+		first_name: req.params.first_name, 
+    last_name: req.params.last_name,
+    blood_gorup: req.params.blood_gorup,
+    address: req.params.address,
+    date_of_birth: req.params.date_of_birth,
+    date_admitted: req.params.date_admitted,
+    department: req.params.department,
+    doctor: req.params.doctor,
+    ailment:req.params.ailment
 	}
   
   // Create the patient using the persistence engine
@@ -122,29 +147,54 @@ server.put('/patients/:id', function (req, res, next) {
   console.log('received PUT request.');
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
   
-  // Make sure patient is defined
-  if (req.params.name === undefined ) {
+  // Make sure first_name is defined
+  if (req.params.first_name === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('name must be supplied'))
+    return next(new restify.InvalidArgumentError('first_name must be supplied'))
   }
-  if (req.params.surname === undefined ) {
+  if (req.params.last_name === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('surname must be supplied'))
+    return next(new restify.InvalidArgumentError('last_name must be supplied'))
   }
-  if (req.params.age === undefined ) {
+  if (req.params.blood_group === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('age must be supplied'))
+    return next(new restify.InvalidArgumentError('blood_group must be supplied'))
   }
-  if (req.params.condition === undefined ) {
+  if (req.params.address === undefined ) {
     // If there are any errors, pass them to next in the correct format
-    return next(new restify.InvalidArgumentError('condition must be supplied'))
+    return next(new restify.InvalidArgumentError('address must be supplied'))
+  }
+  if (req.params.date_of_birth === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('date_of_birth must be supplied'))
+  }
+  if (req.params.date_admitted === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('date_admitted must be supplied'))
+  }
+  if (req.params.department === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('department must be supplied'))
+  }
+  if (req.params.doctor === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('doctor must be supplied'))
+  }
+  if (req.params.ailment === undefined ) {
+    // If there are any errors, pass them to next in the correct format
+    return next(new restify.InvalidArgumentError('ailment must be supplied'))
   }
   
   var newpatient = {
-		name: req.params.name, 
-    surname: req.params.surname,
-    age: req.params.age,
-    condition:req.params.condition
+		first_name: req.params.first_name, 
+    last_name: req.params.last_name,
+    blood_gorup: req.params.blood_gorup,
+    address: req.params.address,
+    date_of_birth: req.params.date_of_birth,
+    date_admitted: req.params.date_admitted,
+    department: req.params.department,
+    doctor: req.params.doctor,
+    ailment:req.params.ailment
 	}
   
   // Update the patient with the persistence engine
