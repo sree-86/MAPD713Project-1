@@ -1,43 +1,95 @@
-var SERVER_NAME = 'patient-api'
-var PORT = process.env.PORT || 8000;
-var HOST = '127.0.0.1';
+var DEFAULT_PORT = 8000
+var DEFAULT_HOST = '127.0.0.1'
+var SERVER_NAME = 'healthrecords'
 var getRequestCounter = 0;
 var postRequestCounter = 0;
 var putRequestCounter = 0;
 var deleteRequestCounter = 0;
 var patientArray = [];
 
+var http = require ('http');
+var mongoose = require ("mongoose");
+
+var port = process.env.PORT;
+var ipaddress = process.env.IP; // TODO: figure out which IP to use for the heroku
+
+// Here we find an appropriate database to connect to, defaulting to
+// localhost if we don't find one.  
+var uristring = 
+  process.env.MONGODB_URI || 
+  'mongodb://tekstil:teksdev07@ds151753.mlab.com:51753/mapd713groupproject';
+
+// Makes connection asynchronously.  Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.connect(uristring, function (err, res) {
+  if (err) { 
+    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+    console.log ('Successfully connected to: ' + uristring);
+  }
+});
+
+// This is the schema.  Note the types, validation and trim
+// statements.  They enforce useful constraints on the data.
+var patientSchema = new mongoose.Schema({
+  first_name: String,
+  last_name: String, 
+  blood_gorup: String, 
+  address: String, 
+  date_of_birth: String, 
+  date_admitted: String, 
+  department: String, 
+  doctor: String, 
+  ailment:String, 
+});
+
+// Compiles the schema into a model, opening (or creating, if
+// nonexistent) the 'Patients' collection in the MongoDB database
+var Patient = mongoose.model('Patient', patientSchema);
+
 var restify = require('restify')
-
-  // Get a persistence engine for the patients
-  , patientsSave = require('save')('patients')
-
   // Create the restify server
-  , server = restify.createServer({ first_name: SERVER_NAME})
+  , server = restify.createServer({ name: SERVER_NAME})
 
-  server.listen(PORT, function () {
-  console.log('Server %s listening at %s', server.first_name, server.url)
+	if (typeof ipaddress === "undefined") {
+		//  Log errors on OpenShift but continue w/ 127.0.0.1 - this
+		//  allows us to run/test the app locally.
+		console.warn('No process.env.IP var, using default: ' + DEFAULT_HOST);
+		ipaddress = DEFAULT_HOST;
+	};
+
+	if (typeof port === "undefined") {
+		console.warn('No process.env.PORT var, using default port: ' + DEFAULT_PORT);
+		port = DEFAULT_PORT;
+	};
+  
+  
+  server.listen(port, ipaddress, function () {
+  console.log('Server %s listening at %s', server.name, server.url)
   console.log('Resources:')
   console.log(' /patients')
-  console.log(' /patients/:id')  
+  console.log(' /patients/:id')
 })
 
-//test the git repository, if this comment occurs with the git commit. Then git repository is successfully set.
-server
-  // Allow the use of POST
-  .use(restify.fullResponse())
 
-  // Maps req.body to req.params so there is no switching between them
-  .use(restify.bodyParser())
+  server
+    // Allow the use of POST
+    .use(restify.plugins.fullResponse())
 
-// Get all patients in the system
+    // Maps req.body to req.params so there is no switching between them
+    .use(restify.plugins.bodyParser())
+
+  
+  
+  
+   // Get all patients in the system
 server.get('/patients', function (req, res, next) {
   getRequestCounter++;
   console.log('received GET request.');
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
 
   // Find every entity within the given collection
-  patientsSave.find({}, function (error, patients) {
+  Patient.find({}, function (error, patients) {
 
     // Return all of the patients in the system
     res.send(patients)
@@ -51,7 +103,7 @@ server.get('/patients/:id', function (req, res, next) {
   console.log('received GET request.');
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
   // Find a single patient by their id within save
-  patientsSave.findOne({ _id: req.params.id }, function (error, patient) {
+  Patient.findOne({ _id: req.params.id }, function (error, patient) {
 
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
@@ -124,7 +176,7 @@ server.post('/patients', function (req, res, next) {
 	}
   
   // Create the patient using the persistence engine
-  patientsSave.create( newpatient, function (error, patient) {
+  Patient.create( newpatient, function (error, patient) {
     
     // If there are any errors, pass them to next in the correct format
     if (error) {
@@ -188,7 +240,7 @@ server.put('/patients/:id', function (req, res, next) {
   var newpatient = {
 		first_name: req.params.first_name, 
     last_name: req.params.last_name,
-    blood_gorup: req.params.blood_gorup,
+    blood_group: req.params.blood_group,
     address: req.params.address,
     date_of_birth: req.params.date_of_birth,
     date_admitted: req.params.date_admitted,
@@ -198,7 +250,7 @@ server.put('/patients/:id', function (req, res, next) {
 	}
   
   // Update the patient with the persistence engine
-  patientsSave.update(newpatient, function (error, patient) {
+  Patient.update(newpatient, function (error, patient) {
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
 
@@ -216,7 +268,7 @@ server.del('/patients/:id', function (req, res, next) {
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
   
   // Delete the patient with the persistence engine
-  patientsSave.delete(req.params.id, function (error, patient) {
+  Patient.delete(req.params.id, function (error, patient) {
 
     // If there are any errors, pass them to next in the correct format
     if (error) return next(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
@@ -235,7 +287,7 @@ server.del('/patients', function (req, res) {
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
   
   // Find every entity within the given collection
-  patientsSave.deleteMany({}, function (error) {
+  Patient.deleteMany({}, function (error) {
 
     // Return all of the patients in the system
     res.send()
