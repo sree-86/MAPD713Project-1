@@ -17,8 +17,8 @@ var ipaddress = process.env.IP; // TODO: figure out which IP to use for the hero
 // localhost if we don't find one.  
 var uristring = 
   process.env.MONGODB_URI || 
-  //'mongodb://tekstil:teksdev07@ds151753.mlab.com:51753/mapd713groupproject';
-  'mongodb://localhost/e-health-db';
+  'mongodb://tekstil:teksdev07@ds151753.mlab.com:51753/mapd713groupproject';
+  //'mongodb://localhost/e-health-db';
 
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
