@@ -1,7 +1,7 @@
 {
-    "name": "phonesapi",
+    "name": "patients",
     "version": "1.0.0",
-    "description": "REST API - Phones",
+    "description": "REST API - Patients",
     "dependencies": {
         "mongod": "^2.0.0",
         "mongodb": "^3.1.8",
