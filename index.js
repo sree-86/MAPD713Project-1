@@ -85,6 +85,7 @@ var restify = require('restify')
   
    // Get all patients in the system
 server.get('/patients', function (req, res, next) {
+	console.log('Inside get');
   getRequestCounter++;
   console.log('received GET request.');
   console.log("Processed Request Counter --> GET: " +  getRequestCounter + ", POST: " + postRequestCounter + ", PUT: " + putRequestCounter +", DELETE: " +deleteRequestCounter);
