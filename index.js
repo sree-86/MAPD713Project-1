@@ -1,4 +1,7 @@
-var DEFAULT_PORT = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
+app.listen(port, "0.0.0.0", function() {
+console.log("Listening on Port 3000");
+});
 var DEFAULT_HOST = '127.0.0.1'
 var SERVER_NAME = 'healthrecords'
 var getRequestCounter = 0;
